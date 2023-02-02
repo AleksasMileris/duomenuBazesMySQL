@@ -1,5 +1,11 @@
 <?php
 require_once 'db.php';
+
+if(isset($_GET['delete'])){
+    $result = $db->prepare("DELETE FROM `employees` WHERE id=? "  );
+    $result->execute([$_GET['delete']]);
+}
+
 $result = $db->query('SELECT * FROM employees');
 $duomenys = $result->fetchAll(PDO::FETCH_ASSOC);
 
@@ -23,6 +29,7 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
 <body>
 <div class="container font-monospace">
     <table class="table table-dark table-striped table-hover table-bordered border-primary table-sm mt-5">
+        <a class="btn-success btn float-end mt-5 mb-2" href="createNew.php">Prideti Nauja Darbuotoja</a>
         <thead>
         <tr >
             <th>Vardas</th>
@@ -30,6 +37,8 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
             <th>Tel nr.</th>
             <th>Išsilavinimas</th>
             <th>Atlyginimas</th>
+            <th></th>
+            <th></th>
             <th></th>
         </tr>
         </thead>
@@ -41,7 +50,10 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= $data['phone'] ?></td>
                     <td><?= $data['education'] ?></td>
                     <td><?= ($data['salary']/100)." EUR" ?></td>
-                    <td><a class="btn btn-danger" href="Darbuotojas.php?id=<?= $data['id'] ?>">Apie</a></td>
+                    <td><a class="btn btn-warning" href="Darbuotojas.php?id=<?= $data['id'] ?>">Apie</a></td>
+                    <td><a class="btn btn-info" href="update.php?id=<?= $data['id'] ?>">Redaguoti</a></td>
+                    <td><a class="btn btn-danger" href="index.php?delete=<?= $data['id'] ?>">Ištrinti</a></td>
+
                 </tr>
         <?php } ?>
         </tbody>
