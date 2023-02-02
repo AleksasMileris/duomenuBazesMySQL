@@ -1,7 +1,9 @@
 <?php
 require_once 'db.php';
-$id=$_GET['id'];
-$result = $db->query("SELECT * FROM employees WHERE id=$id" );
+$id=(int)$_GET['id'];
+$result = $db->prepare("SELECT * FROM employees WHERE id=?" );
+$result->execute([$id]);
+
 $duomenys = $result->fetch(PDO::FETCH_ASSOC);
 
 
