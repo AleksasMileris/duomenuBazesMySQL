@@ -5,13 +5,15 @@ require_once 'db.php';
 
 if(isset($_POST['saved'])){
 
-    $result = $db->prepare("INSERT INTO employees (`name`, `surname`, `gender`, `phone`, `birthday`, `education`, `salary`) VALUES (?, ?, ?, ?, ?, ?, ?)"  );
-    $result->execute([$_POST['name'],$_POST['surname'],$_POST['gender'],$_POST['phone'],$_POST['birthday'],$_POST['education'],$_POST['salary']]);
+    $result = $db->prepare("INSERT INTO employees (`name`, `surname`, `gender`, `phone`, `birthday`, `education`, `salary`, `worker_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"  );
+    $result->execute([$_POST['name'],$_POST['surname'],$_POST['gender'],$_POST['phone'],$_POST['birthday'],$_POST['education'],$_POST['salary'],$_POST['worker_id']]);
     header("location: index.php");
     die();
 };
 
-
+$stm= $db->prepare("SELECT name,id FROM `positions`");
+$stm->execute([]);
+$trade=$stm->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -62,6 +64,14 @@ if(isset($_POST['saved'])){
 
                 <label class="mt-3">Alga Centais</label>
                 <input type="text" class="form-control mt-1" name="salary" value="" >
+
+                <label class="mt-3">Specialybe</label>
+                <select class="form-control" name="worker_id">
+                    <?php foreach ($trade as $specialty){ ?>
+                    <option value="<?= $specialty['id'] ?>"><?= $specialty['name'] ?></option>
+                    <?php } ?>
+                </select>
+
                 <button class="btn btn-info mt-3 float-end"  name="saved" value="1">Išsaugoti</button>
             </form>
         </div>

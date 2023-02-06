@@ -6,8 +6,9 @@ if(isset($_GET['delete'])){
     $result->execute([$_GET['delete']]);
 }
 
-$result = $db->query('SELECT `employees`.*,`positions`.`name` as `position_name` FROM employees LEFT JOIN positions ON `employees`.`worker_id`=`positions`.`id`');
-$duomenys = $result->fetchAll(PDO::FETCH_ASSOC);
+$stm = $db->prepare('SELECT * FROM employees WHERE worker_id=?');
+$stm->execute([$_GET['id']]);
+$duomenys = $stm->fetchAll(PDO::FETCH_ASSOC);
 
 
 $dataBase = $db->query('SELECT * FROM positions ');
@@ -15,7 +16,9 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-
+$stm= $db->prepare("SELECT name,id FROM `positions`");
+$stm->execute([]);
+$trade=$stm->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -35,7 +38,6 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container font-monospace">
 
-
     <?php include_once 'trades_by_cat.php'?>
 
     <table class="table table-dark table-striped table-hover table-bordered border-primary table-sm mt-5">
@@ -46,7 +48,7 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
             <th>Pavarde</th>
             <th>Tel nr.</th>
             <th>Išsilavinimas</th>
-            <th>Pareigos</th>
+
             <th>Atlyginimas</th>
             <th></th>
             <th></th>
@@ -60,7 +62,7 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= $data['surname'] ?></td>
                 <td><?= $data['phone'] ?></td>
                 <td><?= $data['education'] ?></td>
-                <td><?= $data['position_name'] ?></td>
+
                 <td><?= ($data['salary']/100)." EUR" ?></td>
                 <td><a class="btn btn-warning" href="Darbuotojas.php?id=<?= $data['id'] ?>">Apie</a></td>
                 <td><a class="btn btn-info" href="update.php?id=<?= $data['id'] ?>">Redaguoti</a></td>
@@ -70,35 +72,6 @@ $positions = $dataBase->fetchAll(PDO::FETCH_ASSOC);
         <?php } ?>
         </tbody>
     </table>
-
-
-    <div class="card col-md-6">
-        <div class="card-header bg-dark text-light">
-            <div class="card-title">
-                <h2>Baziniai atlyginimai</h2>
-            </div>
-        </div>
-        <div class="card-body bg-dark  bg-opacity-75 ">
-            <table class="table table-hover text-light ">
-                <thead >
-                <tr>
-                    <th>Pareigos</th>
-                    <th>Bazinis darbo užmokestis</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($positions as $position){ ?>
-                    <tr>
-                        <td><?= $position['name']?></td>
-                        <td><?= ($position['base_salary']/100).' EUR'?></td>
-                    </tr>
-
-                <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
 
 

@@ -8,13 +8,15 @@ $duomenys = $result->fetch(PDO::FETCH_ASSOC);
 
 if(isset($_POST['saved'])){
     $id=(int)$_GET['id'];
-    $result = $db->prepare("UPDATE `employees` SET name=? ,surname=?,gender=?,phone=?,birthday=?,education=?,salary=? WHERE id=?"  );
-    $result->execute([$_POST['name'],$_POST['surname'],$_POST['gender'],$_POST['phone'],$_POST['birthday'],$_POST['education'],$_POST['salary'], $id]);
+    $result = $db->prepare("UPDATE `employees` SET name=? ,surname=?,gender=?,phone=?,birthday=?,education=?,salary=?,worker_id=? WHERE id=?"  );
+    $result->execute([$_POST['name'],$_POST['surname'],$_POST['gender'],$_POST['phone'],$_POST['birthday'],$_POST['education'],$_POST['salary'],$_POST['worker_id'], $id]);
     header("location: index.php");
     die();
 };
 
-
+$stm= $db->prepare("SELECT name,id FROM `positions`");
+$stm->execute([]);
+$trade=$stm->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -65,6 +67,16 @@ if(isset($_POST['saved'])){
 
             <label class="mt-3">Alga</label>
             <input class="form-control mt-1" name="salary" value="<?= ($duomenys['salary'])." EUR"?>" >
+
+                <label class="mt-3">Specialybe</label>
+                <select class="form-control" name="worker_id">
+                    <?php foreach ($trade as $specialty){ ?>
+                        <option value="<?= $specialty['id'] ?>" <?= $duomenys['worker_id']==$specialty['id']?'selected':'' ?>><?= $specialty['name'] ?></option>
+
+                    <?php } ?>
+                </select>
+
+
                 <button class="btn btn-info mt-3 float-end"  name="saved">Išsaugoti</button>
             </form>
         </div>
